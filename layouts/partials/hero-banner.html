@@ -1,0 +1,59 @@
+{{ $height := .Params.heroBanner.height | default "lg" }}
+{{ $heightClass := "" }}
+
+{{ if eq $height "sm" }}
+  {{ $heightClass = "h-[400px]" }}
+{{ else if eq $height "md" }}
+  {{ $heightClass = "h-[500px]" }}
+{{ else if eq $height "lg" }}
+  {{ $heightClass = "h-[600px]" }}
+{{ else if eq $height "xl" }}
+  {{ $heightClass = "h-[700px]" }}
+{{ else if eq $height "full" }}
+  {{ $heightClass = "h-screen" }}
+{{ end }}
+
+<div class="hero-banner relative w-full {{ $heightClass }}">
+  {{ if eq .Params.heroBanner.backgroundType "image" }}
+    {{ with .Params.heroBanner.backgroundImage }}
+      <div class="absolute inset-0 w-full h-full">
+        <img src="{{ . }}" alt="{{ $.Params.heroBanner.imageAlt | default "Hero background" }}" 
+          class="w-full h-full object-cover object-{{ $.Params.heroBanner.imagePosition | default "center" }}">
+        <div class="absolute inset-0 bg-black bg-opacity-40"></div> <!-- Overlay for better text readability -->
+      </div>
+    {{ end }}
+  {{ else if eq .Params.heroBanner.backgroundType "color" }}
+    <div class="absolute inset-0 w-full h-full" style="background-color: {{ .Params.heroBanner.backgroundColor | default "#000000" }};">
+    </div>
+  {{ end }}
+
+  <!-- Hero content -->
+  <div class="container mx-auto px-6 relative h-full flex items-center">
+    <div class="hero-content text-{{ .Params.heroBanner.textAlignment | default "left" }} max-w-xl">
+      {{ with .Params.heroBanner.heading }}
+        <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 text-{{ $.Params.heroBanner.textColor | default "white" }}">
+          {{ . }}
+        </h1>
+      {{ end }}
+      
+      {{ with .Params.heroBanner.subheading }}
+        <p class="text-xl sm:text-2xl mb-6 text-{{ $.Params.heroBanner.textColor | default "white" }}">
+          {{ . }}
+        </p>
+      {{ end }}
+      
+      {{ with .Params.heroBanner.description }}
+        <div class="prose prose-lg mb-8 text-{{ $.Params.heroBanner.textColor | default "white" }} prose-headings:text-{{ $.Params.heroBanner.textColor | default "white" }} prose-p:text-{{ $.Params.heroBanner.textColor | default "white" }}">
+          {{ . | markdownify }}
+        </div>
+      {{ end }}
+      
+      {{ if and .Params.heroBanner.buttonText .Params.heroBanner.buttonLink }}
+        <a href="{{ .Params.heroBanner.buttonLink }}" 
+          class="inline-block px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors shadow-lg text-lg">
+          {{ .Params.heroBanner.buttonText }}
+        </a>
+      {{ end }}
+    </div>
+  </div>
+</div>

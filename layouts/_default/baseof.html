@@ -1,17 +1,26 @@
-    <!DOCTYPE html>
-<html lang='{{ .Site.LanguageCode }}'>
-{{ partial "head.html" . }}
+<!DOCTYPE html>
+<html lang="{{ .Site.Language.Lang }}">
+<head>
+    {{ partial "head.html" . }}
+</head>
+<body class="relative">
+    <!-- Site container but no horizontal padding -->
+    <div class="site-container min-h-screen flex flex-col">
+                
+        <!-- Header is positioned absolutely -->
+        {{ partial "header.html" . }}
+        
+        
+        {{ block "hero" . }}
+            <!-- No hero by default -->
+        {{ end }}
 
-<body class="flex flex-col min-h-screen dark:bg-slate-800 text-black dark:text-slate-400">
-    {{- partial "dev/dev-tools.html" . -}}
-    {{- partial "header.html" . -}}
-    <main class="flex-1 grow mx-auto w-screen max-w-screen-2xl px-6 sm:px-7 xl:px-8 2xl:px-10 pt-4 sm:pt-16">
-        {{- block "main" . }}{{- end }}
-    </main>
-
-/themes/layouts/base
-
-    <!-- {{- partial "footer.html" . -}} -->
+        <!-- Main content -->
+        <main class="flex-grow">
+            {{ block "main" . }}{{ end }}
+        </main>
+        
+        {{ partial "footer.html" . }}
+    </div>
 </body>
-
 </html>

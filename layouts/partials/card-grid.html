@@ -1,22 +1,36 @@
 {{ if and .Params.cardGrid .Params.cardGrid.enableCardGrid }}
-<div class="card-grid-section mt-12 mb-12">
-  {{ if .Params.cardGrid.gridTitle }}
-  <h2 class="text-2xl font-bold mb-4">{{ .Params.cardGrid.gridTitle }}</h2>
+<section class="card-grid-section container mx-auto px-6 py-12">
+  {{/* Debug info to help understand the structure */}}
+  <div class="hidden">
+    {{ printf "%#v" . }}
+  </div>
+
+  {{ if .gridTitle }}
+  <h2 class="text-2xl font-bold mb-6">{{ .gridTitle }}</h2>
+  {{ else if .cardGrid.gridTitle }}
+  <h2 class="text-2xl font-bold mb-6">{{ .cardGrid.gridTitle }}</h2>
   {{ end }}
   
-  {{ if .Params.cardGrid.gridDescription }}
-  <div class="grid-description mb-8 prose max-w-none" >
-    {{ .Params.cardGrid.gridDescription | markdownify }}
+  {{ if .gridDescription }}
+  <div class="grid-description mb-8 prose prose-lg max-w-none">
+    {{ .gridDescription | markdownify }}
+  </div>
+  {{ else if .cardGrid.gridDescription }}
+  <div class="grid-description mb-8 prose prose-lg max-w-none">
+    {{ .cardGrid.gridDescription | markdownify }}
   </div>
   {{ end }}
   
+  {{ $columns := .columns | default (.cardGrid.columns | default "3") }}
+  {{ $cards := .cards | default .cardGrid.cards }}
+  
   <div class="card-grid grid gap-6 
-    {{ if eq .Params.cardGrid.columns "2" }}grid-cols-1 md:grid-cols-2
-    {{ else if eq .Params.cardGrid.columns "4" }}grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4
-    {{ else if eq .Params.cardGrid.columns "6" }}grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6
+    {{ if eq $columns "2" }}grid-cols-1 md:grid-cols-2
+    {{ else if eq $columns "4" }}grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4
+    {{ else if eq $columns "6" }}grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6
     {{ else }}grid-cols-1 sm:grid-cols-2 md:grid-cols-3{{ end }}">
     
-    {{ range .Params.cardGrid.cards }}
+    {{ range $cards }}
     <div class="card rounded-lg overflow-hidden shadow-md border border-gray-200 flex flex-col h-full">
       {{ if .cardImage }}
       <div class="card-image aspect-video">
@@ -35,7 +49,7 @@
           <a href="{{ .cardLink }}" 
             {{ if .newTab }}target="_blank" rel="noopener noreferrer"{{ end }}
             class="{{ if eq .linkStyle "button" }}inline-block px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition{{ else }}text-blue-600 hover:text-blue-800 font-medium{{ end }}">
-            {{ .linkText }}
+            {{ .linkText | default "Learn More" }}
             {{ if .newTab }}
             <svg class="inline-block ml-1 w-4 h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
               <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z"></path>
@@ -49,5 +63,5 @@
     </div>
     {{ end }}
   </div>
-</div>
+</section>
 {{ end }}

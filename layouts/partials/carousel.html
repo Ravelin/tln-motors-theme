@@ -1,14 +1,14 @@
-<div id="carousel-{{ with .carouselTitle }}{{ anchorize . }}{{ else }}section-{{ now.UnixNano }}{{ end }}" 
-     class="carousel-section mb-16"
+<section id="carousel-{{ with .carouselTitle }}{{ anchorize . }}{{ else }}section-{{ now.UnixNano }}{{ end }}" 
+     class="carousel-section container mx-auto px-6 py-12"
      data-autoplay="{{ if .autoplay }}true{{ else }}false{{ end }}"
      data-autoplay-speed="{{ default 5000 .autoplaySpeed }}">
 
   {{ if .carouselTitle }}
-  <h2 class="text-2xl font-bold mb-4">{{ .carouselTitle }}</h2>
+  <h2 class="text-2xl font-bold mb-6">{{ .carouselTitle }}</h2>
   {{ end }}
   
   {{ if .carouselDescription }}
-  <div class="carousel-description mb-8 prose max-w-none">
+  <div class="carousel-description mb-8 prose prose-lg max-w-none">
     {{ .carouselDescription | markdownify }}
   </div>
   {{ end }}
@@ -149,4 +149,4 @@
       carousel.addEventListener('mouseleave', startAutoplay);
     }
   </script>
-</div>
+</section>

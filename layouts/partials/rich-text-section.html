@@ -22,48 +22,14 @@
   {{ $paddingClass = printf "%s %s" $paddingClass "pb-16" }}
 {{ end }}
 
-<div class="rich-text-section {{ $bgClass }} {{ $paddingClass }}"
-     {{ if and (eq .background "custom") .backgroundColor }}
-     style="background-color: {{ .backgroundColor }};"
-     {{ end }}>
+<section class="rich-text-section container mx-auto px-6 py-12">
+  {{ if .sectionTitle }}
+  <h2 class="text-2xl font-bold mb-6">{{ .sectionTitle }}</h2>
+  {{ end }}
   
-  <div class="{{ if eq .layout "contained" }}container mx-auto px-6 sm:px-6 lg:px-8{{ end }}">
-    {{ if .sectionTitle }}
-      <h2 class="text-3xl font-bold mb-8 
-        {{ if eq .textAlignment "center" }}text-center{{ else if eq .textAlignment "right" }}text-right{{ end }}
-        {{ $textClass }}"
-        {{ if and (eq .background "custom") .textColor }}
-        style="color: {{ .textColor }};"
-        {{ end }}>
-        {{ .sectionTitle }}
-      </h2>
-    {{ end }}
-    
-    <div class="rich-text-content prose prose-lg max-w-none 
-      {{ if eq .textAlignment "center" }}mx-auto text-center{{ else if eq .textAlignment "right" }}ml-auto text-right{{ end }}
-      {{ $textClass }}"
-      {{ if and (eq .background "custom") .textColor }}
-      style="color: {{ .textColor }};"
-      {{ end }}>
-      {{ .content | markdownify }}
-    </div>
-    
-    {{ if .showCta }}
-      <div class="mt-8 
-        {{ if eq .textAlignment "center" }}text-center{{ else if eq .textAlignment "right" }}text-right{{ end }}">
-        <a href="{{ .ctaLink }}" 
-           class="
-             {{ if eq .ctaStyle "primary" }}bg-blue-600 hover:bg-blue-700 text-white
-             {{ else if eq .ctaStyle "secondary" }}bg-gray-600 hover:bg-gray-700 text-white
-             {{ else if eq .ctaStyle "outline" }}bg-transparent hover:bg-blue-50 border border-blue-600 text-blue-600 hover:text-blue-700
-             {{ else }}bg-transparent hover:underline text-blue-600 hover:text-blue-700{{ end }}
-             {{ if ne .ctaStyle "text" }}px-6 py-3 rounded-md font-medium transition-colors{{ end }}
-             inline-block
-           "
-           {{ if .ctaNewTab }}target="_blank" rel="noopener noreferrer"{{ end }}>
-          {{ .ctaText }}
-        </a>
-      </div>
-    {{ end }}
+  {{ if .content }}
+  <div class="prose prose-lg max-w-none">
+    {{ .content | markdownify }}
   </div>
-</div>
+  {{ end }}
+</section>
