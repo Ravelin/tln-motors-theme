@@ -1,7 +1,25 @@
 {{ define "main" }}
-<article
-    class="justify-self-center mx-auto px-6 mb-16 sm:px-4 md:px-0 prose dark:prose-invert prose-slate lg:prose-lg hover:prose-a:text-sky-500">
-    <h1>{{ .Title }}</h1>
-    {{ .Content }}
-</article>
+<!-- /themes/layouts/single -->
+<section class="justify-self-center mx-auto px-6 mb-16 sm:px-4 md:px-0">
+    
+    {{ if and .Params.heroBanner .Params.heroBanner.enableHero }}
+      {{ partial "hero-banner.html" . }}
+    {{ end }}
+
+    <div class="justify-center mx-auto prose mt-5">
+        {{ .Content }}
+    </div>
+
+    <!-- Include page sections -->
+    {{ if .Params.sections }}
+      {{ partial "page-sections.html" . }}
+    {{ end }}
+    
+    <!-- Debug information (comment out in production) -->
+    <div class="mt-16 p-4 bg-gray-100 rounded-md text-sm" style="display: none;">
+      <h3 class="font-bold mb-2">Debug Info:</h3>
+      <pre>Page Params: {{ printf "%#v" .Params }}</pre>
+      <button class="mt-2 px-2 py-1 bg-gray-300 rounded" onclick="this.parentElement.style.display = 'block'">Show Debug Info</button>
+    </div>
+</section>
 {{ end }}

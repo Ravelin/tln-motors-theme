@@ -1,0 +1,92 @@
+{{ if .Params.sections }}
+  {{ range $sectionIndex, $section := .Params.sections }}
+    {{ $typeValue := $section.sectionType | default $section.type }}
+    
+    {{ if eq $typeValue "richText" }}
+      {{ partial "rich-text-section.html" $section }}
+    
+    {{ else if eq $typeValue "cardGrid" }}
+      <!-- Card grid section -->
+      <div class="card-grid-section mb-16">
+        <div class="card-grid-section mb-16">
+          {{ if $section.gridTitle }}
+          <h2 class="text-2xl font-bold mb-4">{{ $section.gridTitle }}</h2>
+          {{ end }}
+          
+          {{ if $section.gridDescription }}
+          <div class="grid-description mb-8 prose">
+            {{ $section.gridDescription | markdownify }}
+          </div>
+          {{ end }}
+          
+          <div class="card-grid grid gap-6 
+            {{ if eq $section.columns "2" }}grid-cols-1 md:grid-cols-2
+            {{ else if eq $section.columns "4" }}grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4
+            {{ else if eq $section.columns "6" }}grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6
+            {{ else }}grid-cols-1 sm:grid-cols-2 md:grid-cols-3{{ end }}">
+            
+            {{ range $section.cards }}
+            <div class="card rounded-lg overflow-hidden shadow-md border border-gray-200 flex flex-col h-full">
+              {{ if .cardImage }}
+              <div class="card-image aspect-video">
+                <img src="{{ .cardImage }}" alt="{{ .imageAlt }}" class="w-full h-full object-cover">
+              </div>
+              {{ end }}
+              
+              <div class="card-body p-6 flex-grow">
+                <h3 class="card-title text-xl font-semibold mb-3">{{ .cardTitle }}</h3>
+                {{ if .cardContent }}
+                <div class="card-content prose">
+                  {{ .cardContent | markdownify }}
+                </div>
+                {{ end }}
+                
+                {{ if .cardLink }}
+                <div class="mt-4">
+                  <a href="{{ .cardLink }}" 
+                    {{ if .newTab }}target="_blank" rel="noopener noreferrer"{{ end }}
+                    class="{{ if eq .linkStyle "button" }}inline-block px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition{{ else }}text-blue-600 hover:text-blue-800 font-medium{{ end }}">
+                    {{ default "Learn More" .linkText }}
+                  </a>
+                </div>
+                {{ end }}
+              </div>
+            </div>
+            {{ end }}
+          </div>
+        </div>
+      </div>
+    
+    {{ else if eq $typeValue "carousel" }}
+      <!-- Try/catch for carousel partial -->
+      {{ if templates.Exists "partials/carousel.html" }}
+        {{ partial "carousel.html" $section }}
+      {{ else }}
+        <div class="bg-yellow-100 p-4 mb-16">
+          <p>Error: carousel.html partial not found</p>
+        </div>
+      {{ end }}
+    
+    {{ else if eq $typeValue "accordion" }}
+      <!-- Try/catch for accordion partial -->
+      {{ if templates.Exists "partials/accordion.html" }}
+        {{ partial "accordion.html" $section }}
+      {{ else }}
+        <div class="bg-yellow-100 p-4 mb-16">
+          <p>Error: accordion.html partial not found</p>
+          <p>Fallback accordion display:</p>
+          {{ if $section.sectionTitle }}
+          <h2 class="text-2xl font-bold mb-4">{{ $section.sectionTitle }}</h2>
+          {{ end }}
+          
+        </div>
+      {{ end }}
+    
+    {{ else }}
+      <!-- Unknown section type -->
+      <div class="bg-red-100 p-4 mb-16">
+        <p>Unknown section type: {{ $typeValue }}</p>
+      </div>
+    {{ end }}
+  {{ end }}
+{{ end }}

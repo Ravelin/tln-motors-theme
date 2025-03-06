@@ -1,0 +1,47 @@
+<div class="accordion-section mb-16">
+  {{ if .sectionTitle }}
+  <h2 class="text-2xl font-bold mb-4">{{ .sectionTitle }}</h2>
+  {{ end }}
+  
+  <div class="accordion-container">
+    {{ range $item := .accordionItems }}
+    <div class="accordion-item mb-4 border border-gray-200 rounded-lg">
+      <details class="accordion-details">
+        <summary class="accordion-header p-4 font-semibold cursor-pointer hover:bg-gray-50 flex justify-between items-center">
+          {{ $item.itemTitle }}
+          <span class="accordion-icon">▼</span>
+        </summary>
+        <div class="accordion-content p-4 border-t border-gray-200 prose prose-lg max-w-none">
+          {{ $item.itemContent | markdownify }}
+        </div>
+      </details>
+    </div>
+    {{ else }}
+    <div class="p-4 bg-gray-100">
+      <p>No accordion items found</p>
+    </div>
+    {{ end }}
+  </div>
+  
+  <!-- Debug info -->
+  <!-- <details class="mt-4">
+    <summary class="cursor-pointer font-medium">Debug accordion data</summary>
+    <pre class="text-xs mt-2 p-2 bg-gray-100">{{ printf "%#v" . }}</pre>
+  </details> -->
+  
+  <style>
+    .accordion-details > summary {
+        list-style: none;
+    }
+    .accordion-details > summary::-webkit-details-marker {
+        display: none;
+    }
+    .accordion-details[open] .accordion-icon {
+        transform: rotate(180deg);
+    }
+    .accordion-icon {
+        transition: transform 0.2s;
+        font-size: 0.75rem;
+    }
+  </style>
+</div>
