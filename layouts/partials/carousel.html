@@ -13,18 +13,19 @@
   </div>
   {{ end }}
   
-  <div class="carousel-container overflow-hidden relative rounded-lg">
-    <div class="carousel-track flex transition-transform duration-500 ease-in-out">
+  {{ $carouselHeight := .carouselHeight | default "400px" }}
+  <div class="carousel-container overflow-hidden relative rounded-lg" style="height: {{ $carouselHeight }}">
+    <div class="carousel-track flex transition-transform duration-500 ease-in-out h-full">
       {{ range $index, $slide := .slides }}
-      <div class="carousel-slide w-full flex-shrink-0" data-slide="{{ $index }}">
-        <div class="relative">
+      <div class="carousel-slide w-full flex-shrink-0 h-full" data-slide="{{ $index }}">
+        <div class="relative h-full">
           {{ if $slide.image }}
-          <img src="{{ $slide.image }}" alt="{{ $slide.imageAlt }}" class="w-full h-auto object-cover" />
+          <img src="{{ $slide.image }}" alt="{{ $slide.imageAlt }}" class="w-full h-full object-cover" />
           {{ else }}
-          <div class="bg-gray-200 aspect-video flex items-center justify-center">No image</div>
+          <div class="bg-gray-200 w-full h-full flex items-center justify-center">No image</div>
           {{ end }}
           
-          {{ if or $slide.title $slide.caption $slide.ctaText }}
+          {{ if or $slide.caption $slide.ctaText }}
           <div class="slide-content absolute bottom-0 left-0 right-0 bg-black bg-opacity-60 text-white p-4">
             {{ if $slide.title }}<h3 class="text-xl font-bold mb-2">{{ $slide.title }}</h3>{{ end }}
             {{ if $slide.caption }}<div class="slide-caption mb-3">{{ $slide.caption | markdownify }}</div>{{ end }}
@@ -40,7 +41,7 @@
         </div>
       </div>
       {{ else }}
-      <div class="p-8 bg-gray-100">
+      <div class="p-8 bg-gray-100 h-full w-full">
         <p>No slides found</p>
       </div>
       {{ end }}
@@ -71,15 +72,10 @@
     {{ end }}
   </div>
   {{ end }}
-    
+
   <script>
-    // Initialize carousel when DOM is loaded
     document.addEventListener('DOMContentLoaded', function() {
-      initCarousel('{{ with .carouselTitle }}carousel-{{ anchorize . }}{{ else }}carousel-section-{{ now.UnixNano }}{{ end }}');
-    });
-    
-    function initCarousel(id) {
-      const carousel = document.getElementById(id);
+      const carousel = document.getElementById('carousel-{{ with .carouselTitle }}{{ anchorize . }}{{ else }}section-{{ now.UnixNano }}{{ end }}');
       if (!carousel) return;
       
       const track = carousel.querySelector('.carousel-track');
@@ -147,6 +143,6 @@
       });
       
       carousel.addEventListener('mouseleave', startAutoplay);
-    }
+    });
   </script>
 </section>

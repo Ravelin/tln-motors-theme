@@ -14,10 +14,10 @@
         }
     </style>
 
-    <div class="container mx-auto px-6 py-4">
+    <div class="container mx-auto px-6 py-8">
         <nav class="relative">
             <div class="flex items-center justify-between">
-                <a href="{{ .Site.Home.Permalink }}" class="flex items-center text-slate-800 dark:text-slate-200 font-bold">
+                <a href="{{ .Site.Home.Permalink }}" class="flex items-center text-slate-800 dark:text-slate-200 font-bold text-2xl">
                     {{ .Site.Title }}
                 </a>
 
@@ -44,14 +44,19 @@
                             <a href="/" class="block hover:text-sky-500 dark:hover:text-sky-500">Home</a>
                         </li>
                         
-                        <!-- Section links - exclude certain sections -->
+                        <!-- Section links - exclude certain sections and sort by weight -->
+                        {{ $sections := slice }}
                         {{ range .Site.Sections }}
-                            {{ if ne .Section "posts" }}
-                            <li class="py-1">
-                                {{ $url := strings.TrimSuffix "/" .RelPermalink }}
-                                <a href="{{ $url }}" class="block hover:text-sky-500 dark:hover:text-sky-500">{{ .Title }}</a>
-                            </li>
-                            {{ end }}
+                          {{ if ne .Section "posts" }}
+                            {{ $sections = $sections | append . }}
+                          {{ end }}
+                        {{ end }}
+
+                        {{ range sort $sections "Weight" }}
+                        <li class="py-1">
+                          {{ $url := strings.TrimSuffix "/" .RelPermalink }}
+                          <a href="{{ $url }}" class="block hover:text-sky-500 dark:hover:text-sky-500">{{ .Title }}</a>
+                        </li>
                         {{ end }}
                         
                         <!-- <li class="py-1">
