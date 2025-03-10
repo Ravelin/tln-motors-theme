@@ -1,0 +1,80 @@
+<section class="image-gallery-section container mx-auto px-6 py-12">
+  {{ if .galleryTitle }}
+  <h2 class="text-2xl font-bold mb-6">{{ .galleryTitle }}</h2>
+  {{ end }}
+  
+  {{ if .galleryDescription }}
+  <div class="gallery-description mb-8 prose prose-lg max-w-none">
+    {{ .galleryDescription | markdownify }}
+  </div>
+  {{ end }}
+  
+  {{ $columns := .columns | default "3" }}
+  {{ $imageSize := .imageSize | default "medium" }}
+  {{ $gridGap := .gridGap | default "medium" }}
+  
+  <div class="image-gallery grid
+    {{ if eq $columns "2" }}grid-cols-1 md:grid-cols-2
+    {{ else if eq $columns "4" }}grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4
+    {{ else if eq $columns "6" }}grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6
+    {{ else }}grid-cols-1 sm:grid-cols-2 md:grid-cols-3{{ end }}
+    {{ if eq $gridGap "none" }}gap-0
+    {{ else if eq $gridGap "small" }}gap-2
+    {{ else if eq $gridGap "large" }}gap-8
+    {{ else }}gap-4{{ end }}">
+    
+    {{ if .images }}
+      {{ range .images }}
+      <div class="gallery-item overflow-hidden">
+        {{ if .image }}
+        <div class="gallery-image relative
+          {{ if eq $imageSize "small" }}h-48
+          {{ else if eq $imageSize "large" }}h-96
+          {{ else }}h-64{{ end }}">
+          
+          <img src="{{ .image }}" alt="{{ .imageAlt }}" 
+               class="w-full h-full object-cover transition-transform duration-300 hover:scale-105">
+          
+          {{ if .link }}
+          <a href="{{ .link }}" {{ if .newTab }}target="_blank" rel="noopener noreferrer"{{ end }} 
+             class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-0 hover:bg-opacity-30 transition-opacity">
+            <span class="sr-only">View {{ .imageAlt }}</span>
+          </a>
+          {{ end }}
+        </div>
+        {{ end }}
+        
+        {{ if .imageCaption }}
+        <div class="gallery-caption p-3 bg-gray-50 dark:bg-gray-800 prose prose-sm">
+          {{ .imageCaption | markdownify }}
+        </div>
+        {{ end }}
+      </div>
+      {{ end }}
+    {{ else }}
+      <div class="col-span-full p-4 bg-gray-100 text-center">
+        No images found
+      </div>
+    {{ end }}
+  </div>
+  
+  {{ if .images }}
+  <script>
+    // Optional: Add lightbox functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      const galleryItems = document.querySelectorAll('.gallery-image');
+      
+      galleryItems.forEach(item => {
+        item.addEventListener('click', function(e) {
+          // Check if we're clicking on an image without a link
+          if (!e.target.closest('a')) {
+            const img = this.querySelector('img');
+            // Basic zoom effect - could be enhanced with a proper lightbox
+            this.classList.toggle('zoomed');
+          }
+        });
+      });
+    });
+  </script>
+  {{ end }}
+</section>
