@@ -1,4 +1,6 @@
 {{ $height := .Params.heroBanner.height | default "lg" }}
+{{ $layoutType := .Params.heroBanner.layoutType | default "full" }}
+{{ $imagePosition := .Params.heroBanner.imagePosition | default "right" }}
 {{ $heightClass := "" }}
 
 {{ if eq $height "sm" }}
@@ -14,44 +16,91 @@
 {{ end }}
 
 <div class="hero-banner relative w-full {{ $heightClass }}">
-  {{ if eq .Params.heroBanner.backgroundType "image" }}
-    {{ with .Params.heroBanner.backgroundImage }}
-      <div class="absolute inset-0 w-full h-full">
-        <img src="{{ . }}" alt="{{ $.Params.heroBanner.imageAlt | default "Hero background" }}" 
-          class="w-full h-full object-cover object-{{ $.Params.heroBanner.imagePosition | default "center" }}">
-        <div class="absolute inset-0 bg-black bg-opacity-40"></div> <!-- Overlay for better text readability -->
+  <!-- Background Layout -->
+  {{ if eq $layoutType "full" }}
+    <!-- Full Background Image or Color -->
+    {{ if eq .Params.heroBanner.backgroundType "image" }}
+      {{ with .Params.heroBanner.backgroundImage }}
+        <div class="absolute inset-0 w-full h-full">
+          <img src="{{ . }}" alt="{{ $.Params.heroBanner.imageAlt | default "Hero background" }}" 
+            class="w-full h-full object-cover object-{{ $.Params.heroBanner.imagePosition | default "center" }}">
+          {{ if $.Params.heroBanner.enableOverlay }}
+            <div class="absolute inset-0" style="background-color: {{ $.Params.heroBanner.overlayColor | default "rgba(0,0,0,0.5)" }};"></div>
+          {{ end }}
+        </div>
+      {{ end }}
+    {{ else if eq .Params.heroBanner.backgroundType "color" }}
+      <div class="absolute inset-0 w-full h-full" style="background-color: {{ .Params.heroBanner.backgroundColor | default "#000000" }};">
       </div>
     {{ end }}
-  {{ else if eq .Params.heroBanner.backgroundType "color" }}
-    <div class="absolute inset-0 w-full h-full" style="background-color: {{ .Params.heroBanner.backgroundColor | default "#000000" }};">
+  {{ else if eq $layoutType "split" }}
+    <!-- Split Layout with Image on One Side and Color on the Other -->
+    <div class="absolute inset-0 w-full h-full flex {{ if eq $imagePosition "left" }}flex-row{{ else }}flex-row-reverse{{ end }}">
+      <!-- Image Side -->
+      <div class="w-1/2 h-full relative">
+        {{ with .Params.heroBanner.backgroundImage }}
+          <img src="{{ . }}" alt="{{ $.Params.heroBanner.imageAlt | default "Hero background" }}" 
+            class="w-full h-full object-cover object-{{ $.Params.heroBanner.imagePosition | default "center" }}">
+          {{ if $.Params.heroBanner.enableOverlay }}
+            <div class="absolute inset-0" style="background-color: {{ $.Params.heroBanner.overlayColor | default "rgba(0,0,0,0.3)" }};"></div>
+          {{ end }}
+        {{ end }}
+      </div>
+      <!-- Color Side -->
+      <div class="w-1/2 h-full" style="background-color: {{ .Params.heroBanner.secondaryColor | default "#f8f9fa" }};">
+      </div>
     </div>
   {{ end }}
 
-  <!-- Hero content -->
+  <!-- Hero Content - Positioned over the entire banner regardless of layout -->
   <div class="container mx-auto px-6 relative h-full flex items-center">
-    <div class="hero-content text-{{ .Params.heroBanner.textAlignment | default "left" }} max-w-xl">
+    <div class="hero-content text-{{ .Params.heroBanner.textAlignment | default "left" }} {{ if eq .Params.heroBanner.contentWidth "full" }}w-full{{ else }}max-w-{{ .Params.heroBanner.contentWidth | default "xl" }}{{ end }} 
+                {{ if .Params.heroBanner.contentPosition }}
+                  {{ if eq .Params.heroBanner.contentPosition "left" }}
+                    mr-auto
+                  {{ else if eq .Params.heroBanner.contentPosition "right" }}
+                    ml-auto
+                  {{ else }}
+                    mx-auto
+                  {{ end }}
+                {{ else }}
+                  mx-auto
+                {{ end }}">
+      
       {{ with .Params.heroBanner.heading }}
-        <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 text-{{ $.Params.heroBanner.textColor | default "white" }}">
+        <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold mb-4" 
+            style="color: {{ $.Params.heroBanner.textColor | default "#ffffff" }};">
           {{ . }}
         </h1>
       {{ end }}
       
       {{ with .Params.heroBanner.subheading }}
-        <p class="text-xl sm:text-2xl mb-6 text-{{ $.Params.heroBanner.textColor | default "white" }}">
+        <p class="text-xl sm:text-2xl mb-6"
+           style="color: {{ $.Params.heroBanner.textColor | default "#ffffff" }};">
           {{ . }}
         </p>
       {{ end }}
       
       {{ with .Params.heroBanner.description }}
-        <div class="prose prose-lg mb-8 text-{{ $.Params.heroBanner.textColor | default "white" }} prose-headings:text-{{ $.Params.heroBanner.textColor | default "white" }} prose-p:text-{{ $.Params.heroBanner.textColor | default "white" }}">
+        <div class="prose prose-lg mb-8" 
+             style="color: {{ $.Params.heroBanner.textColor | default "#ffffff" }};">
           {{ . | markdownify }}
         </div>
       {{ end }}
       
-      {{ if and .Params.heroBanner.buttonText .Params.heroBanner.buttonLink }}
-        <a href="{{ .Params.heroBanner.buttonLink }}" 
-          class="inline-block px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors shadow-lg text-lg">
-          {{ .Params.heroBanner.buttonText }}
+      {{ if and .Params.heroBanner.primaryButtonText .Params.heroBanner.primaryButtonLink }}
+        <a href="{{ .Params.heroBanner.primaryButtonLink }}" 
+           class="inline-block px-6 py-3 mr-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors shadow-lg"
+           {{ if .Params.heroBanner.primaryButtonNewTab }}target="_blank" rel="noopener"{{ end }}>
+          {{ .Params.heroBanner.primaryButtonText }}
+        </a>
+      {{ end }}
+      
+      {{ if and .Params.heroBanner.secondaryButtonText .Params.heroBanner.secondaryButtonLink }}
+        <a href="{{ .Params.heroBanner.secondaryButtonLink }}" 
+           class="inline-block px-6 py-3 bg-transparent hover:bg-white/10 text-white border border-white rounded-md transition-colors"
+           {{ if .Params.heroBanner.secondaryButtonNewTab }}target="_blank" rel="noopener"{{ end }}>
+          {{ .Params.heroBanner.secondaryButtonText }}
         </a>
       {{ end }}
     </div>
