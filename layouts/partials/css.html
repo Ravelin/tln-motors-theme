@@ -1,6 +1,7 @@
 {{- $styles := resources.Get "css/styles.css" | postCSS (dict "config" "./assets/css/postcss.config.js") -}}
 {{- if hugo.IsServer }}
-{{ $styles = $styles | resources.ExecuteAsTemplate (printf "css/styles.dev.%v.css" now.UnixMilli) .}}
+{{/*  {{ $styles = $styles | resources.ExecuteAsTemplate (printf "css/styles.dev.%v.css" now.UnixMilli) .}}  */}}
+<script src="https://cdn.tailwindcss.com"></script>
 {{ else }}
 {{ $styles = $styles | minify | fingerprint | resources.PostProcess }}
 {{ end -}}
