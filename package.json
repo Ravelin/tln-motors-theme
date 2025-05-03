@@ -1,10 +1,10 @@
 {
-    "name": "hugo-theme-tailwindcss-starter",
-    "version": "0.4.0",
+    "name": "tln-motors-theme",
+    "version": "0.5.0",
     "description": "Starter files for a Hugo theme with Tailwindcss",
     "main": "index.js",
-    "repository": "https://github.com/dirkolbrich/hugo-theme-tailwindcss-starter",
-    "author": "dirkolbrich <github@dirkolbrich.de>",
+    "repository": "https://github.com/Ravelin/tln-motors-theme",
+    "author": "Ravelin",
     "license": "MIT",
     "browserslist": [
         "last 1 version",
